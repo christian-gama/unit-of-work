@@ -36,7 +36,11 @@ docker compose up api
 The application exposes the following endpoints:
 
 **`GET /users`** Returns all the users in the database.
+
 **`GET /users/:id`** Returns a specific user.
+
 **`POST /users/transfer`** Transfers money from one user to another.
+
 **`POST /users`** Creates a new user or updates an existing one (if the ID is provided).
+
 **`DELETE /users/:id`** Deletes a user.
