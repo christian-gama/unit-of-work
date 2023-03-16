@@ -24,6 +24,7 @@ func (r *repositoryImpl) DB(u uow.UnitOfWork) *gorm.DB {
 	return gormUnitOfWork.Tx
 }
 
+// NewRepository is a function that creates a new user repository instance using the provided SQL repository.
 func NewRepository() Repository {
 	return &repositoryImpl{}
 }

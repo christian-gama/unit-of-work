@@ -1,3 +1,2 @@
 run:
-	@docker compose up -d --remove-orphans
-	@go run .
+	@docker compose up -d --remove-orphans --build --force-recreate

@@ -21,3 +21,12 @@ func (d *Dsn) String() string {
 		d.Port,
 		d.SSLMode)
 }
+
+var dsn = &Dsn{
+	Host:     "db",
+	Port:     5432,
+	User:     "postgres",
+	Password: "postgres",
+	DbName:   "postgres",
+	SSLMode:  "disable",
+}

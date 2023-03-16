@@ -12,6 +12,9 @@ type UnitOfWork struct {
 	Tx *gorm.DB
 }
 
+// Commit is a function that commits the transaction in progress.
+// It sets the transaction to the parent database instance.
+// It returns any errors encountered during the operation.
 func (uow *UnitOfWork) Commit() error {
 	log.Println("Commiting the transaction")
 
@@ -21,6 +24,9 @@ func (uow *UnitOfWork) Commit() error {
 	return err
 }
 
+// Rollback is a function that rolls back the transaction in progress.
+// It sets the transaction to the parent database instance.
+// It returns any errors encountered during the operation.
 func (uow *UnitOfWork) Rollback() error {
 	log.Println("Rolling back the transaction")
 
@@ -30,6 +36,9 @@ func (uow *UnitOfWork) Rollback() error {
 	return err
 }
 
+// Begin is a function that starts a new transaction.
+// It sets the transaction to the parent database instance.
+// It returns any errors encountered during the operation.
 func (uow *UnitOfWork) Begin() error {
 	log.Println("Starting a new transaction")
 

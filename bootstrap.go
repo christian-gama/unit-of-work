@@ -9,6 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
+// DB is a global variable holding the database connection instance.
 var DB *gorm.DB
 
 func init() {
@@ -17,6 +18,8 @@ func init() {
 	user.Migrate(DB)
 }
 
+// Bootstrap is a function that sets up the application by creating the user repository, user service, and user controller.
+// It then registers the necessary routes to the provided server instance, runs the server, and listens for incoming requests.
 func Bootstrap(server *gin.Engine) {
 	log.Println("Bootstrapping the application")
 

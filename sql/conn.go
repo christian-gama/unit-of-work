@@ -7,15 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var dsn = &Dsn{
-	Host:     "localhost",
-	Port:     5432,
-	User:     "postgres",
-	Password: "postgres",
-	DbName:   "postgres",
-	SSLMode:  "disable",
-}
-
+// Conn is a function that connects to a PostgreSQL database using the provided connection details and returns a GORM database instance.
 func Conn() *gorm.DB {
 	log.Printf("Connecting to database at %s:%d", dsn.Host, dsn.Port)
 
