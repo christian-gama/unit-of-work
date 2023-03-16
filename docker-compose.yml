@@ -9,6 +9,8 @@ services:
       - ./data:/var/lib/postgresql/data
 
   api:
+    command: go run .
+    working_dir: /go/src/uow
     build:
       context: .
       dockerfile: Dockerfile
@@ -18,3 +20,9 @@ services:
       - db
     links:
       - db
+    volumes:
+      - ./sql:/go/src/uow/sql
+      - ./uow:/go/src/uow/uow
+      - ./user:/go/src/uow/user
+      - ./bootstrap.go:/go/src/uow/bootstrap.go
+      - ./main.go:/go/src/uow/main.go
