@@ -1,2 +1,5 @@
 run:
-	@docker compose up -d --remove-orphans --build --force-recreate
+	@docker compose up api --build --force-recreate --remove-orphans
+
+stop:
+	@docker compose down

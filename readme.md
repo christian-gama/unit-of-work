@@ -1,6 +1,7 @@
 # UOW Example
 
 This repository contains an example implementation of the Unit of Work pattern in Go using GORM and Gin. Please keep in mind that this is just a PoC and it's not following the best practices of architecture or Go, as it was made quickly for demo purposes.
+Some services or repositories may look too dumb, but as I said, this is just a PoC and the purpose is to show how the UOW pattern works.
 
 ## Getting Started
 

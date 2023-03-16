@@ -34,6 +34,8 @@ func Bootstrap(server *gin.Engine) {
 
 	server.GET("/users", userController.FindAll)
 	server.POST("/users", userController.Save)
+	server.POST("/users/transfer", userController.TransferMoney)
+	server.GET("/users/:id", userController.FindOne)
 
 	log.Println("Application running on port 8080")
 	server.Run(":8080")

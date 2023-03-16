@@ -10,8 +10,9 @@ import (
 // It embeds GORM's Model struct and adds Name and Age fields.
 type User struct {
 	gorm.Model
-	Name string `gorm:"not null;unique;size:255" binding:"required" json:"name"`
-	Age  int    `gorm:"not null;size:3" binding:"required" json:"age"`
+	Name  string `gorm:"not null;unique;size:255" binding:"required" json:"name"`
+	Age   int    `gorm:"not null;size:3" binding:"required" json:"age"`
+	Money int    `gorm:"not null;size:3" binding:"required" json:"money"`
 }
 
 // Migrate is a function that creates the User table in the database.
