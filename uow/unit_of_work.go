@@ -4,5 +4,5 @@ package uow
 type UnitOfWork interface {
 	Commit() error
 	Rollback() error
-	Begin() error
+	Transaction(func(uow UnitOfWork) error) error
 }

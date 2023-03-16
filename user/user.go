@@ -2,17 +2,21 @@ package user
 
 import (
 	"log"
+	"time"
 
 	"gorm.io/gorm"
 )
 
 // User is a struct representing a User in the system.
-// It embeds GORM's Model struct and adds Name and Age fields.
+// It embeds GORM's Model struct and adds Name, Age and Money fields.
 type User struct {
-	gorm.Model
-	Name  string `gorm:"not null;unique;size:255" binding:"required" json:"name"`
-	Age   int    `gorm:"not null;size:3" binding:"required" json:"age"`
-	Money int    `gorm:"not null;size:3" binding:"required" json:"money"`
+	ID        uint           `gorm:"primarykey"`
+	Age       int            `gorm:"not null;size:3" json:"age"`
+	Money     int            `gorm:"not null;size:9" json:"money"`
+	Name      string         `gorm:"not null;unique;size:255" json:"name"`
+	DeletedAt gorm.DeletedAt `gorm:"index" json:"-"`
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 // Migrate is a function that creates the User table in the database.

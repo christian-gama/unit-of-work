@@ -24,7 +24,7 @@ func Bootstrap(server *gin.Engine) {
 	log.Println("Bootstrapping the application")
 
 	log.Println("Creating the user repository")
-	userRepo := user.NewRepository(sql.NewRepository())
+	userRepo := user.NewRepository(sql.NewRepository(DB))
 
 	log.Println("Creating the user service")
 	userService := user.NewService(userRepo, sql.NewUnitOfWork(DB))
@@ -36,6 +36,7 @@ func Bootstrap(server *gin.Engine) {
 	server.POST("/users", userController.Save)
 	server.POST("/users/transfer", userController.TransferMoney)
 	server.GET("/users/:id", userController.FindOne)
+	server.DELETE("/users/:id", userController.Delete)
 
 	log.Println("Application running on port 8080")
 	server.Run(":8080")

@@ -13,6 +13,7 @@ type Controller interface {
 	Save(ctx *gin.Context)
 	TransferMoney(ctx *gin.Context)
 	FindOne(ctx *gin.Context)
+	Delete(ctx *gin.Context)
 }
 
 type controllerImpl struct {
@@ -27,7 +28,7 @@ func NewController(service Service) Controller {
 // FindAll is a function that returns all the users in the database.
 // It uses the user service instance to call the appropriate function and returns the result.
 func (c *controllerImpl) FindAll(ctx *gin.Context) {
-	users, err := c.service.FindAll()
+	users, err := c.service.FindAll(ctx.Request.Context(), &FindAllParams{})
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -40,46 +41,53 @@ func (c *controllerImpl) FindAll(ctx *gin.Context) {
 // It uses the user service instance to call the appropriate function and saves the user to the database.
 // It then returns the created user and a status OK to the client.
 func (c *controllerImpl) Save(ctx *gin.Context) {
-	var user User
-	err := ctx.BindJSON(&user)
+	var dto *SaveDto
+	err := ctx.BindJSON(&dto)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = c.service.Save(&user)
+	saveParams := &SaveParams{
+		&User{
+			ID:    dto.ID,
+			Name:  dto.Name,
+			Money: dto.Money,
+			Age:   dto.Age,
+		},
+	}
+	err = c.service.Save(ctx.Request.Context(), saveParams)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, user)
-}
-
-type TransferMoneyRequest struct {
-	From   uint `json:"from"`
-	To     uint `json:"to"`
-	Amount int  `json:"amount"`
+	ctx.JSON(http.StatusOK, saveParams)
 }
 
 // TransferMoney is a function that transfers money from one user to another.
 // It uses the user service instance to call the appropriate function and transfers money from one user to another.
 // It then returns a status OK to the client.
 func (c *controllerImpl) TransferMoney(ctx *gin.Context) {
-	var request TransferMoneyRequest
-	err := ctx.BindJSON(&request)
+	var dto *TransferMoneyDto
+	err := ctx.BindJSON(&dto)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = c.service.TransferMoney(request.From, request.To, request.Amount)
+	transferMoneyParams := &TransferMoneyParams{
+		From:   dto.From,
+		To:     dto.To,
+		Amount: dto.Amount,
+	}
+	err = c.service.TransferMoney(ctx.Request.Context(), transferMoneyParams)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{"message": "Money transferred successfully"})
+	ctx.JSON(http.StatusOK, gin.H{"message": "money transferred successfully"})
 }
 
 // FindOne is a function that returns a single user from the database.
@@ -93,11 +101,38 @@ func (c *controllerImpl) FindOne(ctx *gin.Context) {
 		return
 	}
 
-	user, err := c.service.FindOne(uint(id))
+	findOneParams := &FindOneParams{
+		ID: uint(id),
+	}
+	user, err := c.service.FindOne(ctx.Request.Context(), findOneParams)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, user)
+}
+
+// Delete is a function that deletes a user from the database.
+// It uses the user service instance to call the appropriate function and deletes the user from the database.
+// It then returns a status OK to the client.
+func (c *controllerImpl) Delete(ctx *gin.Context) {
+	idStr := ctx.Param("id")
+
+	id, err := strconv.Atoi(idStr)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	deleteParams := &DeleteParams{
+		ID: uint(id),
+	}
+	err = c.service.Delete(ctx.Request.Context(), deleteParams)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"message": "user deleted successfully"})
 }

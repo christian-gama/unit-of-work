@@ -5,40 +5,43 @@ import (
 	"gorm.io/gorm"
 )
 
-type UnitOfWork struct {
-	db *gorm.DB
-	Tx *gorm.DB
+// unitOfWorkImpl is a struct that implements the unitOfWorkImpl interface and holds a GORM database connection.
+type unitOfWorkImpl struct {
+	db            *gorm.DB
+	isTransaction bool
 }
 
-// Commit is a function that commits the transaction in progress.
-// It sets the transaction to the parent database instance.
-// It returns any errors encountered during the operation.
-func (uow *UnitOfWork) Commit() error {
-	err := uow.Tx.Commit().Error
-	uow.Tx = uow.db
+// Commit is a function that commits the current transaction. If there is no transaction, it does nothing.
+func (u *unitOfWorkImpl) Commit() error {
+	if u.isTransaction {
+		return u.db.Commit().Error
+	}
 
-	return err
+	return nil
 }
 
-// Rollback is a function that rolls back the transaction in progress.
-// It sets the transaction to the parent database instance.
-// It returns any errors encountered during the operation.
-func (uow *UnitOfWork) Rollback() error {
-	err := uow.Tx.Rollback().Error
-	uow.Tx = uow.db
+// Rollback is a function that rolls back the current transaction. If there is no transaction, it does nothing.
+func (u *unitOfWorkImpl) Rollback() error {
+	if u.isTransaction {
+		return u.db.Rollback().Error
+	}
 
-	return err
+	return nil
 }
 
-// Begin is a function that starts a new transaction.
-// It sets the transaction to the parent database instance.
-// It returns any errors encountered during the operation.
-func (uow *UnitOfWork) Begin() error {
-	uow.Tx = uow.db.Begin()
+// Transaction is a function that executes the provided function in a transaction.
+// If the unit of work is already in a transaction, it executes the provided function without creating a new transaction.
+func (u *unitOfWorkImpl) Transaction(fn func(uow uow.UnitOfWork) error) error {
+	if u.isTransaction {
+		return fn(u)
+	}
 
-	return uow.Tx.Error
+	return u.db.Transaction(func(tx *gorm.DB) error {
+		return fn(&unitOfWorkImpl{db: tx, isTransaction: true})
+	})
 }
 
-func NewUnitOfWork(db *gorm.DB) uow.UnitOfWork {
-	return &UnitOfWork{db: db, Tx: db}
+// NewUnitOfWork is a function that creates a new unit of work instance using the provided GORM database connection.
+func NewUnitOfWork(db *gorm.DB) *unitOfWorkImpl {
+	return &unitOfWorkImpl{db: db}
 }
