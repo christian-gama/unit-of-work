@@ -19,7 +19,8 @@ func (d *Dsn) String() string {
 		d.Password,
 		d.DbName,
 		d.Port,
-		d.SSLMode)
+		d.SSLMode,
+	)
 }
 
 var dsn = &Dsn{

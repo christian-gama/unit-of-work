@@ -15,6 +15,7 @@ type userRepositoryImpl struct {
 	sql.Repository
 }
 
+// NewRepository is a function that returns a new user repository instance.
 func NewRepository(repository sql.Repository) Repository {
 	return &userRepositoryImpl{repository}
 }

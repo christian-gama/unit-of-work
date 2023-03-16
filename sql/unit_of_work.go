@@ -1,8 +1,6 @@
 package sql
 
 import (
-	"log"
-
 	"github.com/christian-gama/uow/uow"
 	"gorm.io/gorm"
 )
@@ -16,8 +14,6 @@ type UnitOfWork struct {
 // It sets the transaction to the parent database instance.
 // It returns any errors encountered during the operation.
 func (uow *UnitOfWork) Commit() error {
-	log.Println("Commiting the transaction")
-
 	err := uow.Tx.Commit().Error
 	uow.Tx = uow.db
 
@@ -28,8 +24,6 @@ func (uow *UnitOfWork) Commit() error {
 // It sets the transaction to the parent database instance.
 // It returns any errors encountered during the operation.
 func (uow *UnitOfWork) Rollback() error {
-	log.Println("Rolling back the transaction")
-
 	err := uow.Tx.Rollback().Error
 	uow.Tx = uow.db
 
@@ -40,8 +34,6 @@ func (uow *UnitOfWork) Rollback() error {
 // It sets the transaction to the parent database instance.
 // It returns any errors encountered during the operation.
 func (uow *UnitOfWork) Begin() error {
-	log.Println("Starting a new transaction")
-
 	uow.Tx = uow.db.Begin()
 
 	return uow.Tx.Error
